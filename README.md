@@ -29,6 +29,4 @@ Inconsistent Fields: Exported CSVs often had varying numbers of columns per row 
 
 Parsing Issues: The Python parser failed when trying to cleanly join handshake and application data, often due to NaN values or misalignment of sessions.
 
-Protocol Noise: Even after filtering with tls.handshake or tls.app_data, unrelated protocols like QUIC or HTTP2 sometimes remained, complicating clean separation.
-
 The key challenge was reliably matching handshake packets (which contain ephemeral keys) to their corresponding application data packets (which contain ciphertext) using only IPs, ports, and timestamps — a non-trivial task when the traffic is messy or contains dropped packets.
