@@ -32,22 +32,13 @@ Parsing Issues: The Python parser failed when trying to cleanly join handshake a
 The key challenge was reliably matching handshake packets (which contain ephemeral keys) to their corresponding application data packets (which contain ciphertext) using only IPs, ports, and timestamps — a non-trivial task when the traffic is messy or contains dropped packets.
 
 ## Next Steps
-The next step is to write a Python parser that will:
 
-Load the two CSV files (handshakes.csv and app_data.csv)
+The next stage is to write a Python script that parses the exported TLS CSV files. The objective is to extract and organise relevant fields from both the handshake and application data — such as IP addresses, port numbers, timestamps, key shares, RSA modulus, and ciphertext — and then match them into a single structured table.
 
-Parse and clean each row
+The parser will:
 
-Attempt to match each application data packet with the appropriate TLS handshake, based on common features like IP address, ports, and timestamp proximity
+- Load and clean the handshake and application data CSV files.
+- Extract key fields like client random, key share, RSA modulus, and ciphertext.
+- Match handshake packets to corresponding application data using shared IP/port combinations and nearby timestamps.
+- Output a merged CSV file containing the matched sessions with all the necessary information.
 
-Output a merged dataset (e.g., merged_tls_sessions.csv) that contains:
-
-Timestamps
-
-IP and port info
-
-Ciphertext
-
-Ephemeral key materials (e.g., client randoms, public keys)
-
-This parser is essential to simulate the "Harvest Now, Decrypt Later" concept by preparing structured, key-matched data that could be subjected to cryptanalysis or decryption attempts in a post-quantum context.
