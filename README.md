@@ -24,12 +24,17 @@ tshark -r tls_traffic.pcapng -Y "tls.handshake" -T fields -e frame.time -e ip.sr
 
 tshark -r tls_traffic.pcapng -Y "tls.app_data" -T fields -e frame.time -e ip.src -e ip.dst -e tcp.srcport -e tcp.dstport -e tls.record.length -e tls.record.content_type -E header=y -E separator=, > app_data.csv
 ```
-Problems Encountered
-Inconsistent Fields: Exported CSVs often had varying numbers of columns per row due to missing fields in some packets.
+## Problems with CSV Export
 
-Parsing Issues: The Python parser failed when trying to cleanly join handshake and application data, often due to NaN values or misalignment of sessions.
+While exporting TLS packet data to CSV, I encountered several issues that make parsing difficult:
 
-The key challenge was reliably matching handshake packets (which contain ephemeral keys) to their corresponding application data packets (which contain ciphertext) using only IPs, ports, and timestamps — a non-trivial task when the traffic is messy or contains dropped packets.
+- Some rows contain missing or inconsistent field values, such as empty cells or extra delimiters.
+- The formatting of timestamps and use of escaped characters (e.g. `\`) varies and can cause parsing errors.
+- Handshake and application data often appear in separate packets with no consistent session ID to match them reliably.
+- Some entries are malformed or duplicated, especially during high-volume exchanges.
+- Data fields such as cipher suites or key material can span multiple lines or include embedded commas, disrupting the CSV structure.
+
+These inconsistencies complicate efforts to extract and match relevant cryptographic information programmatically. Improving the capture and export process — or cleaning the CSV programmatically — is necessary before analysis.
 
 ## Next Steps
 
